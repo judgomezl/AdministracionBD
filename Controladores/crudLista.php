@@ -46,27 +46,27 @@
             $resulNuevaTabla = pg_query($conexion, $crearTablaLogs);
         }
 
-        /* *********************** Agregra los datos viejos a log_tabla*********************/
-        $valorViejo = "SELECT * FROM $tabla WHERE id = '$id';";
-        echo $valorViejo;
-        $resultado = pg_query($conexion, $valorViejo);
+        // /* *********************** Agregra los datos viejos a log_tabla*********************/
+        // $valorViejo = "SELECT * FROM $tabla WHERE id = '$id';";
+        // echo $valorViejo;
+        // $resultado = pg_query($conexion, $valorViejo);
         
-        $columnas = "SELECT * FROM information_schema.columns where table_name = '$tablaLogs' AND table_schema = '$schema';";
-        $resultado1 = pg_query($conexion, $columnas);
-        while ($atri = pg_fetch_array($resultado)) {
-            while ($atributos = pg_fetch_array($resultado1)) {
-                $valor = $atri[$atributos['column_name']];
-                echo $valor;
-                $atributo = $atributos['column_name'];
-                if ($atributo == 'id') {
-                    $query = 'INSERT INTO '.$schema_log.'.'.$tablaLogs.' ('.$atributo.') VALUES ('.$valor.');';
-                    $resultado = pg_query($conexion, $query);
-                }else{
-                    $query2 = 'UPDATE '.$schema_log.'.'.$tablaLogs.' SET '.$atributo.' = '.$valor.' WHERE id = '.$id.';';
-                    $resultado = pg_query($conexion, $query2);
-                }
-            }
-        }
+        // $columnas = "SELECT * FROM information_schema.columns where table_name = '$tablaLogs' AND table_schema = '$schema';";
+        // $resultado1 = pg_query($conexion, $columnas);
+        // while ($atri = pg_fetch_array($resultado)) {
+        //     while ($atributos = pg_fetch_array($resultado1)) {
+        //         $valor = $atri[$atributos['column_name']];
+        //         echo $valor;
+        //         $atributo = $atributos['column_name'];
+        //         if ($atributo == 'id') {
+        //             $query = 'INSERT INTO '.$schema_log.'.'.$tablaLogs.' ('.$atributo.') VALUES ('.$valor.');';
+        //             $resultado = pg_query($conexion, $query);
+        //         }else{
+        //             $query2 = 'UPDATE '.$schema_log.'.'.$tablaLogs.' SET '.$atributo.' = '.$valor.' WHERE id = '.$id.';';
+        //             $resultado = pg_query($conexion, $query2);
+        //         }
+        //     }
+        // }
         if ($resultado) {
             echo "Datos agregados";
         } 
