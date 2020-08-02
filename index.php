@@ -34,7 +34,7 @@
     <body>
         
         <div > 
-        <h1>Elija una opcion</h1>
+        <h1 title="Seleccione la tabla en la seccion que corresponda a la accion que desea realizar">Elija una opcion</h1>
             <form action="Interfaces/buscar.php" name="buscar" id="buscar" method="POST">
                 <div>Selecciones la tabla
                     <select name="formtabla" id="formtabla">
@@ -48,7 +48,7 @@
                         ?>
                     </select>
                 </div>
-                <input type="submit" id="buscar" name="accion" value="Buscar">
+                <input type="submit" color="blue" id="buscar" name="accion" value="Buscar" title="Busca dentro de la base de datos la tabla seleccionada">
             </form><br>    
 
             <form action="Interfaces/agregar.php" name="buscar" id="buscar" method="POST">
@@ -64,8 +64,10 @@
                         ?>
                     </select>
                 </div>
-                <input type="submit" id="agregar" name="accion" value="Ir">
+                <input type="submit" id="agregar" name="accion" value="Ir" title="Agregar informacion dentro de la tabla seleccionada">
             </form><br>    
         </div>
+
+
     </body>
 </html>
