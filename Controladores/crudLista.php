@@ -3,10 +3,6 @@
     
     $conexion=conectarBD();
     $accion = $_POST['accion'];
-    
-    
-    
-
 
     if ($accion == 'modificar') {
 
@@ -15,12 +11,11 @@
         $tabla = $_SESSION['tabla'];
         $schema_log = $_SESSION['schema_log'];
         $schema = $_SESSION['schema'];
-
-
-
         $tablaLogs = "log_".$tabla;
 
-
+        /********************************************************************/
+        /******************Crea  las tablas log_'s si no existen ************/
+        /********************************************************************/
         
         $query = "SELECT * FROM information_schema.tables where table_schema = '$schema';";
 
@@ -45,61 +40,57 @@
             $crearTablaLogs = 'CREATE TABLE '.$schema_log.'.'.$tablaLogs.' AS SELECT * FROM '.$tabla.' WHERE 1 = 0;';
             $resulNuevaTabla = pg_query($conexion, $crearTablaLogs);
         }
-        
-        /********************************************************************/
-        // $query2 = "SELECT column_name FROM information_schema.columns where table_name = '$tabla' AND table_schema = 'public';";
-        // $resultado3 = pg_query($conexion, $query2);
-        
-
-        // $valores = "SELECT * from $tabla WHERE id = '$id';";
-        // $resultado4 = pg_query($conexion, $valores);
-
-
-        // echo $id."2";
-        // $s = -1;
-        
-        // $resu = pg_fetch_array($resultado4);
-
-        // while ($atri = pg_fetch_array($resultado3)) {
-        //     # code...
-        //     $s = $s + 1;
-        //         # code...
-        //         echo $resu[0][0];
-        //         $atributo = $atri[$s['column_name']];
-        //         $valor = $resu[0][$atributo];
-        //         echo $valor;
-        //         if ($atributo == 'id') {
-        //             $query = 'INSERT INTO '.$schema_log.'.'.$tablaLogs.' ('.$atributo.') VALUES ('.$valor.');';
-        //             $resultado = pg_query($conexion, $query);
-        //         }else{
-    
-        //             $query2 = ' UPDATE '.$schema_log.'.'.$tablaLogs.' SET '.$atributo.' = '.$valor.' WHERE id = '.$id.';';
-        //             $resultado = pg_query($conexion, $query2);
-        //         }
-
-            
-        // }
 
         /********************************************************************/
+        /**********Guarda la informacion en las tablas log_'s  **************/
+        /********************************************************************/
 
-        $query1 = "SELECT * FROM information_schema.columns where table_name = '$tabla' AND table_schema = 'public';";
+
+        $query2 = "SELECT column_name FROM information_schema.columns where table_name = '$tabla' AND table_schema = 'public';";
+        $resultado3 = pg_query($conexion, $query2);
+
+        
+        $valores = "SELECT * from $tabla WHERE id = '$id';";
+        $resultado4 = pg_query($conexion, $valores);
+        $resu = pg_fetch_array($resultado4);
+
+        while ($atri = pg_fetch_array($resultado3)) {
+            $atributo = $atri['column_name'];
+            $valor = $resu[$atributo];
+            echo $valor;
+            if ($atributo == 'id') {
+                $query = 'INSERT INTO '.$schema_log.'.'.$tablaLogs.' ('.$atributo.') VALUES (\''.$valor.'\');';
+                $resultado = pg_query($conexion, $query);
+            }else{
+                $query2 = ' UPDATE '.$schema_log.'.'.$tablaLogs.' SET '.$atributo.' = \''.$valor.'\' WHERE id = \''.$id.'\';';
+                $resultado = pg_query($conexion, $query2);
+            }
+        }
+
+        /********************************************************************/
+        /*****Actualiza la informacion que el usuario alla elegido***********/
+        /********************************************************************/
+
+
+        $query1 = "SELECT * FROM information_schema.columns where column_name != 'id' AND table_name = '$tabla' AND table_schema = 'public';";
         $resultado1 = pg_query($conexion, $query1);
-        $s = -1;
         while ($atributos = pg_fetch_array($resultado1)) {
-            # code...
-            $s = $s + 1;
+
             $valor = $_POST[$atributos['column_name']];
             $atributo = $atributos['column_name'];
-            $query2 = " UPDATE $tabla SET $atributo = '$valor' WHERE id = '$id';";
-            $resultado = pg_query($conexion, $query2);
+            if ($atributo != 'id') {
+                $query2 = " UPDATE $tabla SET $atributo = '$valor' WHERE id = '$id';";
+                $resultado = pg_query($conexion, $query2);
+            }
         }
         if ($resultado) {
-            # code...
             echo "Datos actualizados";
         }
 
 
-        // Valores para la lista de resultados
+        /********************************************************************/
+        /*************Valores para la lista de resultados********************/
+        /********************************************************************/
         $listAtributos= [];
 
         $query1 = "SELECT * FROM information_schema.columns WHERE table_name = '$tabla' AND table_schema = 'public' ;";
@@ -248,7 +239,6 @@
         }
         $cantAtributos = count($listAtributos);
     }
-
 ?>
 
 <html lang="en">

@@ -56,13 +56,16 @@
                     $columna = -1;
                     while (($fila = pg_fetch_array($resultadocolumnas))) {
                         $columna = $columna + 1;
+                        if ($fila['column_name'] != 'id') {
+
                 ?>
                 <div  class="blue-text col l10"> <?php echo $fila['column_name']; ?>
                     <input type="text" name="<?php echo $fila['column_name'] ?>" value="<?php echo $valor[$columna] ?>" placeholder="Valor del atributo">
                     <label for="<?php echo $fila['column_name'] ?>"></label>
                 </div><br>
                 <?php
-                }
+                        }
+                    }
                 ?>
                 <div>
                     <button type="submit" class="blue btn small" name="accion" value="modificar">Modificar Informacion</button>
